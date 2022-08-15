@@ -71,9 +71,10 @@ function getWeatherText(ctx: WeatherContext): string {
   return [
     `${ctx.icon} `,
     `${ctx.statusTitle} (${ctx.statusDescription}) `,
-    `${ctx.temp}°C, Feels like ${ctx.feelsLikeTemp}°C, `,
+    `${Math.round(ctx.temp)}°C, `,
+    `Feels like ${Math.round(ctx.feelsLikeTemp)}°C, `,
     `Humidity ${ctx.humidity}%, `,
-    `Wind ${ctx.windSpeed}km/h from ${ctx.windDirection}`,
+    `Wind ${ctx.windSpeed}m/s from ${ctx.windDirection}`,
   ].join("");
 }
 
