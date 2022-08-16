@@ -1,10 +1,10 @@
-import { Weather } from "./weather";
+import { Weather, AirPollution } from "./weather";
 
 declare global {
   const API_KEY: string;
 }
 
-export class OpenWeatherMap {
+export class OpenWeather extends Weather {
   ICON_CODE_MAP: { [key: string]: string } = {
     /* Ref: https://openweathermap.org/weather-conditions */
     "01": "☀️", // clear sky
@@ -27,6 +27,16 @@ export class OpenWeatherMap {
     5: "Very Poor",
   };
 
+  get icon(): string {
+    return this.ICON_CODE_MAP[this.iconCode.slice(0, -1)];
+  }
+
+  get aqiDisplay(): string {
+    return `${this.aqi.aqi} (${this.AQI_MAP[this.aqi.aqi].toLowerCase()})`;
+  }
+}
+
+export class OpenWeatherMap {
   latitude: string;
   longitude: string;
 
@@ -50,19 +60,27 @@ export class OpenWeatherMap {
     const airPollutionAPI = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${this.latitude}&lon=${this.longitude}&appid=${API_KEY}`;
     const response: Response = await fetch(airPollutionAPI);
     const res: any = await response.json();
-    console.log(res.coord, res.list);
-    return res;
+    return new AirPollution(
+      res.list[0].main.aqi,
+      res.list[0].components.co,
+      res.list[0].components.no,
+      res.list[0].components.no2,
+      res.list[0].components.o3,
+      res.list[0].components.so2,
+      res.list[0].components.pm2_5,
+      res.list[0].components.pm10,
+      res.list[0].components.nh3
+    );
   }
 
-  async fetchWeather(): Promise<Weather | null> {
+  async fetchWeather(): Promise<OpenWeather | null> {
     /* Ref: https://openweathermap.org/current */
     const weatherAPI = `https://api.openweathermap.org/data/2.5/weather?lat=${this.latitude}&lon=${this.longitude}&units=metric&appid=${API_KEY}`;
     const response: Response = await fetch(weatherAPI);
     const res: any = await response.json();
-    console.log(res);
     const airPollutionRes = await this.fetchAirPollution();
-    return new Weather(
-      this.getIcon(res.weather[0].icon),
+    return new OpenWeather(
+      res.weather[0].icon,
       res.weather[0].main,
       res.weather[0].description,
       res.main.temp,
@@ -77,15 +95,7 @@ export class OpenWeatherMap {
       res.name,
       res.sys.sunrise,
       res.sys.sunset,
-      airPollutionRes.list[0].main.aqi,
-      this.getAQIDisplay(airPollutionRes.list[0].main.aqi)
+      airPollutionRes
     );
-  }
-
-  getIcon(code: string): string {
-    return this.ICON_CODE_MAP[code.slice(0, -1)] || "";
-  }
-  getAQIDisplay(aqi: number): string {
-    return this.AQI_MAP[aqi];
   }
 }

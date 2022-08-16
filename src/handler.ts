@@ -1,5 +1,4 @@
-import { Weather } from "./weather";
-import { OpenWeatherMap } from "./open-weather-map";
+import { OpenWeatherMap, OpenWeather } from "./open-weather-map";
 
 export async function handler(request: Request) {
   const params: URLSearchParams = new URL(request.url).searchParams;
@@ -11,7 +10,7 @@ export async function handler(request: Request) {
     ? await OpenWeatherMap.fromLocation(location)
     : new OpenWeatherMap(lat, lon);
 
-  const w: Weather | null = await api.fetchWeather();
+  const w: OpenWeather | null = await api.fetchWeather();
   let status: string = "";
   if (w) {
     status = [
@@ -21,7 +20,7 @@ export async function handler(request: Request) {
       `Feels like ${w.feelsLikeTempDisplay}, `,
       `Humidity ${w.humidityDisplay}, `,
       `Wind ${w.windSpeedDisplay} from ${w.windDirection}, `,
-      `AQI ${w.aqi} (${w.aqiDisplay.toLowerCase()})`,
+      `AQI ${w.aqiDisplay}`,
       `<br>`,
       `Location: ${w.area} (${w.latitude}, ${w.longitude}), `,
       `Visibility ${w.visibilityDisplay}, Pressure ${w.pressureDisplay}, `,

@@ -1,5 +1,39 @@
+export class AirPollution {
+  aqi: number;
+  co: number;
+  no: number;
+  no2: number;
+  o3: number;
+  so2: number;
+  pm2_5: number;
+  pm10: number;
+  nh3: number;
+
+  constructor(
+    aqi: number,
+    co: number,
+    no: number,
+    no2: number,
+    o3: number,
+    so2: number,
+    pm2_5: number,
+    pm10: number,
+    nh3: number
+  ) {
+    this.aqi = aqi;
+    this.co = co;
+    this.no = no;
+    this.no2 = no2;
+    this.o3 = o3;
+    this.so2 = so2;
+    this.pm2_5 = pm2_5;
+    this.pm10 = pm10;
+    this.nh3 = nh3;
+  }
+}
+
 export class Weather {
-  icon: string;
+  iconCode: string;
   statusTitle: string;
   statusDescription: string;
   temp: number;
@@ -14,11 +48,10 @@ export class Weather {
   area: string;
   sunrise: number;
   sunset: number;
-  aqi: number;
-  aqiDisplay: string;
+  aqi: AirPollution;
 
   constructor(
-    icon: string,
+    iconCode: string,
     statusTitle: string,
     statusDescription: string,
     temp: number,
@@ -33,10 +66,9 @@ export class Weather {
     area: string,
     sunrise: number,
     sunset: number,
-    aqi: number,
-    aqiDisplay: string
+    aqi: AirPollution
   ) {
-    this.icon = icon;
+    this.iconCode = iconCode;
     this.statusTitle = statusTitle;
     this.statusDescription = statusDescription;
     this.temp = temp;
@@ -52,9 +84,11 @@ export class Weather {
     this.sunrise = sunrise;
     this.sunset = sunset;
     this.aqi = aqi;
-    this.aqiDisplay = aqiDisplay;
   }
 
+  get icon(): string {
+    throw new Error("Method not implemented.");
+  }
   get tempDisplay(): string {
     return this.celsiusDisplay(this.temp);
   }
@@ -76,11 +110,14 @@ export class Weather {
   get windDirection(): string {
     return this.angleToDirection(this.windAngle);
   }
-  get sunriseTimeDisplay() {
+  get sunriseTimeDisplay(): string {
     return this.epochToTimeDisplay(this.sunrise);
   }
-  get sunsetTimeDisplay() {
+  get sunsetTimeDisplay(): string {
     return this.epochToTimeDisplay(this.sunset);
+  }
+  get aqiDisplay(): string {
+    return `${this.aqi}`;
   }
 
   celsiusDisplay(temp: number): string {
