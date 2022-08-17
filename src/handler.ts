@@ -25,7 +25,7 @@ export async function handler(request: Request) {
       `<br>`,
       `Location: ${w.area} (${w.latitude}, ${w.longitude}), `,
       `Visibility ${w.visibilityDisplay}, Pressure ${w.pressureDisplay}, `,
-      `Sun raises at ${w.sunriseTimeDisplay} and sets at ${w.sunsetTimeDisplay}`,
+      `Sun rises at ${w.sunriseTimeDisplay} and sets at ${w.sunsetTimeDisplay}`,
     ].join("");
   }
 
