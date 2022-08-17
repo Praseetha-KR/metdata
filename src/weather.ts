@@ -49,6 +49,7 @@ export class Weather {
   sunrise: number;
   sunset: number;
   aqi: AirPollution;
+  requestTimezone: string;
 
   constructor(
     iconCode: string,
@@ -66,7 +67,8 @@ export class Weather {
     area: string,
     sunrise: number,
     sunset: number,
-    aqi: AirPollution
+    aqi: AirPollution,
+    requestTimezone: string
   ) {
     this.iconCode = iconCode;
     this.statusTitle = statusTitle;
@@ -84,6 +86,7 @@ export class Weather {
     this.sunrise = sunrise;
     this.sunset = sunset;
     this.aqi = aqi;
+    this.requestTimezone = requestTimezone;
   }
 
   get icon(): string {
@@ -130,6 +133,7 @@ export class Weather {
       hour12: true,
       hour: "numeric",
       minute: "numeric",
+      timeZone: this.requestTimezone,
     }).format(d);
   }
 

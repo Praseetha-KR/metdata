@@ -5,10 +5,11 @@ export async function handler(request: Request) {
   const lat: string = params.get("lat") || "0.0";
   const lon: string = params.get("lon") || "0.0";
   const location: string = params.get("location") || "";
+  const requestTimezone: string = request.cf?.timezone || "UTC";
 
   const api: OpenWeatherMap = location
-    ? await OpenWeatherMap.fromLocation(location)
-    : new OpenWeatherMap(lat, lon);
+    ? await OpenWeatherMap.fromLocation(location, requestTimezone)
+    : new OpenWeatherMap(lat, lon, requestTimezone);
 
   const w: OpenWeather | null = await api.fetchWeather();
   let status: string = "";

@@ -39,20 +39,25 @@ export class OpenWeather extends Weather {
 export class OpenWeatherMap {
   latitude: string;
   longitude: string;
+  requestTimezone: string;
 
-  constructor(latitude: string, longitude: string) {
+  constructor(latitude: string, longitude: string, requestTimezone: string) {
     this.latitude = latitude;
     this.longitude = longitude;
+    this.requestTimezone = requestTimezone;
   }
 
-  static async fromLocation(location: string): Promise<OpenWeatherMap> {
+  static async fromLocation(
+    location: string,
+    requestTimezone: string
+  ): Promise<OpenWeatherMap> {
     /* Ref: https://openweathermap.org/api/geocoding-api#direct */
     const geoLocationAPI: string = `https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=1&appid=${API_KEY}`;
     const response: Response = await fetch(geoLocationAPI);
     const res: any = await response.json();
     const latitude = res?.[0]?.lat ?? "0.0";
     const longitude = res?.[0]?.lon ?? "0.0";
-    return new OpenWeatherMap(latitude, longitude);
+    return new OpenWeatherMap(latitude, longitude, requestTimezone);
   }
 
   async fetchAirPollution() {
@@ -95,7 +100,8 @@ export class OpenWeatherMap {
       res.name,
       res.sys.sunrise,
       res.sys.sunset,
-      airPollutionRes
+      airPollutionRes,
+      this.requestTimezone
     );
   }
 }
